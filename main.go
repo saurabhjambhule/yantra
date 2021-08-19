@@ -1,6 +1,6 @@
 package main
 
-import "yantra/cmd"
+import "github.com/saurabhjambhule/yantra/cmd"
 
 func main() {
 	cmd.Execute()
