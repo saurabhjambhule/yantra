@@ -1,20 +1,7 @@
 package config
 
-type Volumes struct {
+type Volume struct {
 	Name string
-}
-
-type TaskDefinition struct {
-	Family                  string
-	Revision                int64
-	ExecutionRoleArn        string
-	ContainerDefinitions    []ContainerDefinition
-  Cpu                     string
-	Memory                  string
-	NetworkMode             string
-	Tags                    []KeyValuePair
-  RequiresCompatibilities []string
-	Volumes                 []Volumes
 }
 
 type ContainerDependency struct {
@@ -24,11 +11,11 @@ type ContainerDependency struct {
 
 type KeyValuePair struct {
 	Name   string
-	Value string
+	Value  string
 }
 
 type HealthCheck struct {
-	Command     string
+	Command     []string
 	Interval    int64
   Retries     int64
   StartPeriod int64
@@ -37,7 +24,7 @@ type HealthCheck struct {
 
 type LogConfiguration struct {
 	LogDriver string
-	Options   []KeyValuePair
+	Options   map[string]*string
 }
 
 type MountPoint struct {
@@ -53,21 +40,35 @@ type PortMappings struct {
 }
 
 type ContainerDefinition struct {
-	Name             string
-	Essential        bool
-  Command          []string
-	Cpu              int64
-  DependsOn        []ContainerDependency
-  EntryPoint       string
-	Environment      []KeyValuePair
-  HealthCheck      HealthCheck
-	Image            string
-  LogConfiguration LogConfiguration
-	Memory           int64
-  MountPoints      []MountPoint
-	PortMappings     []PortMappings
-	StartTimeout     int64
-  StopTimeout      int64
+	Name              string
+	Essential         bool
+  Command           []string
+	Cpu               int64
+  DependsOn         []ContainerDependency
+  EntryPoint        []string
+	Environment       []KeyValuePair
+  HealthCheck       HealthCheck
+	Image             string
+  LogConfiguration  LogConfiguration
+	Memory            int64
+	MemoryReservation int64
+  MountPoints       []MountPoint
+	PortMappings      []PortMappings
+	StartTimeout      int64
+  StopTimeout       int64
+}
+
+type TaskDefinition struct {
+  ContainerDefinitions 		  []ContainerDefinition
+  Cpu 											string
+	Memory 										string
+  ExecutionRoleArn 					string
+	TaskRoleArn 							string
+  Family 										string
+  NetworkMode 							string
+  RequiresCompatibilities   []string
+  Tags											[]KeyValuePair
+  Volumes 									[]Volume
 }
 
 // type ECS struct {
@@ -79,9 +80,9 @@ type ContainerDefinition struct {
 // 	TargetGroupArn *string
 // }
 
-func GetContainerDefinition(configPath string, configFile string) ContainerDefinition {
-  conf := ContainerDefinition{}
-	conf = fetchConfigFromFile(configPath, configFile, conf).(ContainerDefinition)
+func GetTaskDefinition(configPath string, configFile string) TaskDefinition {
+  conf := TaskDefinition{}
+	conf = fetchConfigFromFile(configPath, configFile, conf).(TaskDefinition)
 
   return conf
 }

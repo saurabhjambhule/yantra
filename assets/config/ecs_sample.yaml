@@ -43,6 +43,7 @@ containerDefinitions:
     containerPath: "/opt/dash/log/custom_upload_files"
     sourceVolume: app_data
   memory:
+  memoryReservation: 128
   stopTimeout: 30
   image: '002417289773.dkr.ecr.us-east-1.amazonaws.com/dash-test:dev-lubdhak_workspace_injector_fix'
   startTimeout: 30
@@ -87,6 +88,7 @@ containerDefinitions:
     containerPath: "/opt/dash/log/custom_upload_files"
     sourceVolume: app_data
   memory:
+  memoryReservation: 128
   stopTimeout: 30
   image: '002417289773.dkr.ecr.us-east-1.amazonaws.com/dash-test:dev-lubdhak_workspace_injector_fix'
   startTimeout: 30
@@ -132,6 +134,7 @@ containerDefinitions:
     containerPath: "/opt/dash/log/custom_upload_files"
     sourceVolume: app_data
   memory:
+  memoryReservation: 128
   stopTimeout: 30
   image: '002417289773.dkr.ecr.us-east-1.amazonaws.com/dash-test:dev-lubdhak_workspace_injector_fix'
   startTimeout: 30
@@ -152,6 +155,7 @@ containerDefinitions:
   environment: []
   mountPoints: []
   memory:
+  memoryReservation: 128
   stopTimeout: 30
   image: redis:latest
   startTimeout: 30
@@ -197,7 +201,7 @@ containerDefinitions:
 memory: '16384'
 taskRoleArn: arn:aws:iam::002417289773:role/dash_ecs_staging
 taskDefinitionArn: arn:aws:ecs:us-east-1:002417289773:task-definition/testing_dash_stack:363
-family: testing_dash_stack
+family: testing_yantra
 requiresCompatibilities:
 - FARGATE
 networkMode: awsvpc
