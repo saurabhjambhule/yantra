@@ -5,9 +5,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/saurabhjambhule/yantra/pkg/git"
 	"github.com/saurabhjambhule/yantra/pkg/aws"
-	"github.com/saurabhjambhule/yantra/pkg/aws/ecr"
+	"github.com/saurabhjambhule/yantra/pkg/git"
 	"github.com/saurabhjambhule/yantra/internal/utils"
 )
 
@@ -16,21 +15,20 @@ var Cmd = &cobra.Command{
 	Use:   "deploy",
 	Short: "deploy",
 	Run: func(cmd *cobra.Command, args []string) {
-		imageTag := getImageTag()
-		_ = imageTag
+		runECSTask()
 	},
 }
 
-func init() {
-	// Here you will define your flags and configuration settings.
+func ecsDeploy()  {
+	imageTag := getImageTag()
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// deployCmd.PersistentFlags().String("foo", "", "A help for foo")
+	awsProfile := "default"
+	awsRegion := "us-east-1"
+	session := aws.StartSession(awsProfile, awsRegion)
+	createdAt := checkImageFromECR(session, imageTag, "dash-test")
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// deployCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	fmt.Println("The image: " + imageTag + " created " + createdAt + " before!")
+	utils.UserConfirmation()
 }
 
 func getImageTag() string {
@@ -46,17 +44,5 @@ func getImageTag() string {
 		imageTag = "dev-" + imageTag
 	}
 
-	createdAt := checkImageFromECR("default", "us-east-1", imageTag, "dash-test")
-
-	fmt.Println("The image: " + imageTag + " created " + createdAt + " before!")
-	utils.UserConfirmation()
-
 	return imageTag
-}
-
-func checkImageFromECR(awsProfile string, awsRegion string, imageTag string, repoName string) string {
-	session := aws.StartSession(awsProfile, awsRegion)
-	_, createdAt := ecr.DoesImageExist(session, imageTag, repoName)
-
-	return createdAt
 }

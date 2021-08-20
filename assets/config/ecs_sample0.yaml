@@ -1,0 +1,48 @@
+logConfiguration:
+  logDriver: awslogs
+  secretOptions:
+  options:
+    awslogs-group: dash
+    awslogs-region: us-east-1
+    awslogs-stream-prefix: dash/app
+entryPoint:
+portMappings:
+- hostPort: 3000
+  protocol: tcp
+  containerPort: 3000
+command:
+- rails
+- staging
+cpu: 0
+environment:
+- name: APPLICATION_DOMAIN
+  value: track2883.testing.siftery.com
+- name: AUTH_PROXY_DOMAIN
+  value: https://auth-proxy.testing.siftery.com/users/auth/google/callback
+- name: AV_HOSTNAME
+  value: av.dash.testing
+- name: DB_HOST
+  value: dash-testing.cdcqpkmeyjz2.us-east-1.rds.amazonaws.com
+- name: DB_NAME
+  value: dash_stg2
+- name: ENABLE_NR
+  value: 'false'
+- name: JOB_WORKER_URL
+  value: redis://127.0.0.1:6379/0
+- name: RAILS_ENV
+  value: staging
+mountPoints:
+- readOnly:
+  containerPath: "/opt/dash"
+  sourceVolume: app
+- readOnly:
+  containerPath: "/opt/dash/log/custom_upload_files"
+  sourceVolume: app_data
+memory:
+stopTimeout: 30
+image: '002417289773.dkr.ecr.us-east-1.amazonaws.com/dash-test:dev-lubdhak_workspace_injector_fix'
+startTimeout: 30
+dependsOn:
+healthCheck:
+essential: false
+name: app

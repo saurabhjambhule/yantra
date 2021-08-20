@@ -1,0 +1,23 @@
+  Command:
+    - String
+  Cpu: Integer
+  DependsOn:
+    - ContainerDependency
+  EntryPoint:
+    - String
+  Environment:
+    - KeyValuePair
+  Essential: Boolean
+  HealthCheck:
+    HealthCheck
+  Image: String
+  LogConfiguration:
+    LogConfiguration
+  Memory: Integer
+  MountPoints:
+    - MountPoint
+  Name: String
+  PortMappings:
+    - PortMapping
+  StartTimeout: Integer
+  StopTimeout: Integer
