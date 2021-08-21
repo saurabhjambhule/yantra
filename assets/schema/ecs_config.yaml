@@ -1,0 +1,17 @@
+Cluster: String
+DesiredCount: Integer
+EnableECSManagedTags: Boolean
+LaunchType: String
+StartedBy: String
+NetworkConfiguration:
+  NetworkConfiguration:
+    AwsVpcConfiguration:
+      AssignPublicIp: String
+      SecurityGroups: 
+        - String
+      Subnets:
+        - String
+PlatformVersion: String
+Tags:
+  - Tag
+TaskDefinition: String

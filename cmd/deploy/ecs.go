@@ -24,5 +24,5 @@ func runECSTask()  {
 	// fmt.Println("The image: " + imageTag + " created " + createdAt + " before!")
 	// utils.UserConfirmation()
 
-	ecs.RunECSTask(session)
+	ecs.RunECSTask(session, "/Users/saurabhjambhule/workspace/go/src/github.com/saurabhjambhule/yantra/examples/config/ecs", "track2883")
 }

@@ -71,18 +71,37 @@ type TaskDefinition struct {
   Volumes 									[]Volume
 }
 
-// type ECS struct {
-// 	ClusterName    string
-// 	ServiceName    string
-// 	IamRoleArn     string
-// 	TaskDefinition *ecs.RegisterTaskDefinitionInput
-// 	TaskDefArn     *string
-// 	TargetGroupArn *string
-// }
+type NetworkConfiguration struct {
+    AwsvpcConfiguration AwsVpcConfiguration
+}
+
+type AwsVpcConfiguration struct {
+    AssignPublicIp string
+    SecurityGroups []string
+    Subnets        []string
+}
+
+type ECSRunTask struct {
+  Cluster 					   string
+  Count 							 int64
+  EnableECSManagedTags bool
+  LaunchType 				   string
+  NetworkConfiguration NetworkConfiguration
+  PlatformVersion			 string
+	Tags								 []KeyValuePair
+  TaskDefinition 			 string
+}
 
 func GetTaskDefinition(configPath string, configFile string) TaskDefinition {
   conf := TaskDefinition{}
 	conf = fetchConfigFromFile(configPath, configFile, conf).(TaskDefinition)
+
+  return conf
+}
+
+func GetECSConfig(configPath string, configFile string) ECSRunTask {
+  conf := ECSRunTask{}
+	conf = fetchConfigFromFile(configPath, configFile, conf).(ECSRunTask)
 
   return conf
 }

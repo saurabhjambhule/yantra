@@ -1,0 +1,12 @@
+Cluster: dash-testing
+Count: 1
+EnableECSManagedTags: false
+LaunchType: FARGATE
+NetworkConfiguration:
+  AwsVpcConfiguration:
+    AssignPublicIp:
+    SecurityGroups:
+      - sg-07533be05931b6f51
+    Subnets:
+      - subnet-0a41be75ba2fb9c6f
+PlatformVersion: 1.3.0
