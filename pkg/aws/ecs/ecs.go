@@ -337,7 +337,39 @@ func stopRunningTasks(client *ecs.ECS, cluster *string, tasks []*string) {
 	}
 }
 
-func RunECSTask(session *session.Session, ecsConfigDir string, startedBy string)  {
+func getTaskIP(client *ecs.ECS, cluster *string, task *string) string {
+	input := &ecs.DescribeTasksInput{
+		Cluster: cluster,
+    Tasks: []*string{
+      task,
+    },
+	}
+
+	result, err := client.DescribeTasks(input)
+	if err != nil {
+    if aerr, ok := err.(awserr.Error); ok {
+      switch aerr.Code() {
+      case ecs.ErrCodeServerException:
+        fmt.Println(ecs.ErrCodeServerException, aerr.Error())
+      case ecs.ErrCodeClientException:
+        fmt.Println(ecs.ErrCodeClientException, aerr.Error())
+      case ecs.ErrCodeInvalidParameterException:
+        fmt.Println(ecs.ErrCodeInvalidParameterException, aerr.Error())
+      case ecs.ErrCodeClusterNotFoundException:
+        fmt.Println(ecs.ErrCodeClusterNotFoundException, aerr.Error())
+      default:
+        fmt.Println(aerr.Error())
+      }
+    } else {
+      fmt.Println(err.Error())
+    }
+    log.Fatal(err)
+	}
+
+	return *result.Tasks[0].Containers[0].NetworkInterfaces[0].PrivateIpv4Address
+}
+
+func RunECSTask(session *session.Session, ecsConfigDir string, startedBy string) string {
 	client := ecs.New(session)
 
 	taskDefinitionConfig := config.GetTaskDefinition(ecsConfigDir, taskDefinitionFile)
@@ -380,8 +412,11 @@ func RunECSTask(session *session.Session, ecsConfigDir string, startedBy string)
 	}
 
 	getECSTaskStatus(client, *result.Tasks[0].ClusterArn, *result.Tasks[0].TaskArn)
+	taskIP := getTaskIP(client, result.Tasks[0].ClusterArn, result.Tasks[0].TaskArn)
 
 	if isRunning {
 		stopRunningTasks(client, ecsRunTaskInput.Cluster, existingTasks)
 	}
+
+	return taskIP
 }
