@@ -12,16 +12,11 @@ NetworkConfiguration:
       - subnet-0a41be75ba2fb9c6f
 PlatformVersion: 1.3.0
 
----
+Route53HostedZone: Z2VPLB83J447ZF
+DomainPrefix: track
+DomainSuffix: .testing.siftery.com
+
 Image:
   AppProd: 002417289773.dkr.ecr.us-east-1.amazonaws.com/dash-prod
   AppDev: 002417289773.dkr.ecr.us-east-1.amazonaws.com/dash-test
   Web: 002417289773.dkr.ecr.us-east-1.amazonaws.com/dash-web
-
-Route53:
-  HostedZone: Z2VPLB83J447ZF
-  DomainSuffix: .testing.siftery.com
-  DomainPrefix: track
-
-Environment:
-  DatabaseName:

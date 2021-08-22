@@ -12,27 +12,6 @@ import (
 	"github.com/saurabhjambhule/yantra/internal/utils"
 )
 
-const (
-	ecsConfigFile  = "config"
-	taskDefinitionFile  = "task_defination"
-)
-
-func checkAndSetAwsString(input string) *string {
-	if utils.IsStringEmpty(input) {
-		return nil
-	}	else {
-		return setAwsString(input)
-	}
-}
-
-func checkAndSetAwsInt(input int64) *int64 {
-	if utils.IsIntEmpty(input) {
-		return nil
-	}	else {
-		return setAwsInt(input)
-	}
-}
-
 func setTags(input []config.KeyValuePair) []*ecs.Tag {
 	var tags []*ecs.Tag
 	for _, t := range input {
