@@ -1,4 +1,4 @@
-package ecs
+package aws
 
 import (
 	"fmt"
@@ -16,17 +16,6 @@ const (
 	ecsConfigFile  = "config"
 	taskDefinitionFile  = "task_defination"
 )
-
-func setAwsString(input string) *string {
-	input = config.UpdatePlaceholder(input)
-
-	return aws.String(input)
-}
-
-// TODO: Placeholder for integer values
-func setAwsInt(input int64) *int64 {
-	return aws.Int64(input)
-}
 
 func checkAndSetAwsString(input string) *string {
 	if utils.IsStringEmpty(input) {

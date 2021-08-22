@@ -6,8 +6,6 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/saurabhjambhule/yantra/pkg/aws"
-	"github.com/saurabhjambhule/yantra/pkg/aws/ecr"
-	"github.com/saurabhjambhule/yantra/pkg/aws/ecs"
 	// "github.com/saurabhjambhule/yantra/pkg/config"
 	"github.com/saurabhjambhule/yantra/internal/utils"
 )
@@ -17,7 +15,7 @@ const (
 )
 
 func checkImageFromECR(session *session.Session, imageTag string, repoName string) string {
-	_, createdAt := ecr.DoesImageExist(session, imageTag, repoName)
+	_, createdAt := aws.DoesImageExist(session, imageTag, repoName)
 
 	return createdAt
 }
@@ -37,6 +35,6 @@ func runECSTask()  {
 	// taskDefinitionConfig := config.GetTaskDefinition("/Users/saurabhjambhule/workspace/go/src/github.com/saurabhjambhule/yantra/examples/config/ecs", "task_defination")
 	// fmt.Println(taskDefinitionConfig)
 
-	taskIP := ecs.RunECSTask(session, "/Users/saurabhjambhule/workspace/go/src/github.com/saurabhjambhule/yantra/examples/config/ecs", "saurbh")
+	taskIP := aws.RunECSTask(session, "/Users/saurabhjambhule/workspace/go/src/github.com/saurabhjambhule/yantra/examples/config/ecs", "saurbh")
 	fmt.Println(taskIP)
 }

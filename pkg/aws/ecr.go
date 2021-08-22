@@ -1,4 +1,4 @@
-package ecr
+package aws
 
 import (
 	"log"
