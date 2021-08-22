@@ -1,0 +1,8 @@
+site_name: yantra
+site_description: An automation engine for building platform services.
+repo_name: saurabhjambhule/yantra
+repo_url: https://github.com/saurabhjambhule/yantra
+edit_uri: edit/main/docs/docs/
+
+theme:
+  name: material
