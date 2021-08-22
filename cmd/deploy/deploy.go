@@ -17,7 +17,6 @@ var Cmd = &cobra.Command{
 }
 
 func getImageTag() string {
-	// gitBranch := "tapish/TRKINTEG-553_m365_unactivated_count_fix"
 	gitBranch := git.GetBranch()
 	imageTag := gitBranch
 
