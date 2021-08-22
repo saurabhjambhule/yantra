@@ -200,7 +200,6 @@ containerDefinitions:
 
 memory: '16384'
 taskRoleArn: arn:aws:iam::002417289773:role/dash_ecs_staging
-taskDefinitionArn: arn:aws:ecs:us-east-1:002417289773:task-definition/testing_dash_stack:363
 family: testing_yantra
 requiresCompatibilities:
 - FARGATE

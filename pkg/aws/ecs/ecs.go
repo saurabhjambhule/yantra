@@ -18,18 +18,29 @@ const (
 )
 
 func setAwsString(input string) *string {
+	input = config.UpdatePlaceholder(input)
+
+	return aws.String(input)
+}
+
+// TODO: Placeholder for integer values
+func setAwsInt(input int64) *int64 {
+	return aws.Int64(input)
+}
+
+func checkAndSetAwsString(input string) *string {
 	if utils.IsStringEmpty(input) {
 		return nil
 	}	else {
-		return aws.String(input)
+		return setAwsString(input)
 	}
 }
 
-func setAwsInt(input int64) *int64 {
+func checkAndSetAwsInt(input int64) *int64 {
 	if utils.IsIntEmpty(input) {
 		return nil
 	}	else {
-		return aws.Int64(input)
+		return setAwsInt(input)
 	}
 }
 
@@ -37,8 +48,8 @@ func setTags(input []config.KeyValuePair) []*ecs.Tag {
 	var tags []*ecs.Tag
 	for _, t := range input {
 		tag := &ecs.Tag {
-				Key:   aws.String(t.Name),
-				Value: aws.String(t.Value),
+				Key:   setAwsString(t.Name),
+				Value: setAwsString(t.Value),
 		}
 		tags = append(tags, tag)
 	}
@@ -49,20 +60,20 @@ func setTags(input []config.KeyValuePair) []*ecs.Tag {
 func setContainerDefinition(input config.ContainerDefinition) *ecs.ContainerDefinition {
 	var command []*string
 	for _, c := range input.Command {
-		command = append(command, aws.String(c))
+		command = append(command, setAwsString(c))
 	}
 
 	var entryPoint []*string
 	for _, ep := range input.EntryPoint {
-		entryPoint = append(entryPoint, aws.String(ep))
+		entryPoint = append(entryPoint, setAwsString(ep))
 	}
 
 	var portMappings []*ecs.PortMapping
 	for _, p := range input.PortMappings {
 		portMapping := &ecs.PortMapping {
-				ContainerPort: aws.Int64(p.ContainerPort),
-				HostPort:      aws.Int64(p.HostPort),
-				Protocol:      aws.String(p.Protocol),
+				ContainerPort: setAwsInt(p.ContainerPort),
+				HostPort:      setAwsInt(p.HostPort),
+				Protocol:      setAwsString(p.Protocol),
 		}
 		portMappings = append(portMappings, portMapping)
 	}
@@ -70,8 +81,8 @@ func setContainerDefinition(input config.ContainerDefinition) *ecs.ContainerDefi
 	var dependencies []*ecs.ContainerDependency
 	for _, d := range input.DependsOn {
 		dependency := &ecs.ContainerDependency {
-				Condition: 		 aws.String(d.Condition),
-				ContainerName: aws.String(d.ContainerName),
+				Condition: 		 setAwsString(d.Condition),
+				ContainerName: setAwsString(d.ContainerName),
 		}
 		dependencies = append(dependencies, dependency)
 	}
@@ -79,9 +90,9 @@ func setContainerDefinition(input config.ContainerDefinition) *ecs.ContainerDefi
 	var mountPoints []*ecs.MountPoint
 	for _, m := range input.MountPoints {
 		mountPoint := &ecs.MountPoint {
-				ContainerPath: aws.String(m.ContainerPath),
+				ContainerPath: setAwsString(m.ContainerPath),
 				ReadOnly: 		 aws.Bool(m.ReadOnly),
-				SourceVolume:  aws.String(m.SourceVolume),
+				SourceVolume:  setAwsString(m.SourceVolume),
 		}
 		mountPoints = append(mountPoints, mountPoint)
 	}
@@ -91,39 +102,39 @@ func setContainerDefinition(input config.ContainerDefinition) *ecs.ContainerDefi
 	var healthCheck *ecs.HealthCheck = nil
 	if !utils.IsStringSliceEmpty(h.Command) {
 		for _, hc := range h.Command {
-			healthCommand = append(healthCommand, aws.String(hc))
+			healthCommand = append(healthCommand, setAwsString(hc))
 		}
 		healthCheck = &ecs.HealthCheck {
 				Command:     healthCommand,
-				Interval:    aws.Int64(h.Interval),
-			  Retries:     aws.Int64(h.Retries),
-			  StartPeriod: aws.Int64(h.StartPeriod),
-			  Timeout:     aws.Int64(h.Timeout),
+				Interval:    setAwsInt(h.Interval),
+			  Retries:     setAwsInt(h.Retries),
+			  StartPeriod: setAwsInt(h.StartPeriod),
+			  Timeout:     setAwsInt(h.Timeout),
 		}
 	}
 
 	l := input.LogConfiguration
 	logConfiguration := &ecs.LogConfiguration {
-			LogDriver: aws.String(l.LogDriver),
+			LogDriver: setAwsString(l.LogDriver),
 			Options:   l.Options,
 	}
 
 	var environments []*ecs.KeyValuePair
 	for _, e := range input.Environment {
 		environment := &ecs.KeyValuePair {
-				Name:  aws.String(e.Name),
-				Value: aws.String(e.Value),
+				Name:  setAwsString(e.Name),
+				Value: setAwsString(e.Value),
 		}
 		environments = append(environments, environment)
 	}
 
-	image := setAwsString(input.Image)
-	name := setAwsString(input.Name)
-	cpu := setAwsInt(input.Cpu)
-	memory := setAwsInt(input.Memory)
-	memoryReservation := setAwsInt(input.MemoryReservation)
-	stopTimeout := setAwsInt(input.StopTimeout)
-	startTimeout := setAwsInt(input.StartTimeout)
+	image := checkAndSetAwsString(input.Image)
+	name := checkAndSetAwsString(input.Name)
+	cpu := checkAndSetAwsInt(input.Cpu)
+	memory := checkAndSetAwsInt(input.Memory)
+	memoryReservation := checkAndSetAwsInt(input.MemoryReservation)
+	stopTimeout := checkAndSetAwsInt(input.StopTimeout)
+	startTimeout := checkAndSetAwsInt(input.StartTimeout)
 
 	containerDefinition := &ecs.ContainerDefinition{
 		Image:     				 image,
@@ -153,22 +164,22 @@ func createTaskDefination(client *ecs.ECS, input config.TaskDefinition) string {
 		containerDefinitions = append(containerDefinitions, setContainerDefinition(cd))
 	}
 
-	family := setAwsString(input.Family)
-	networkMode := setAwsString(input.NetworkMode)
-	cpu := setAwsString(input.Cpu)
-	memory := setAwsString(input.Memory)
-	executionRoleArn := setAwsString(input.ExecutionRoleArn)
-	taskRoleArn := setAwsString(input.TaskRoleArn)
+	family := checkAndSetAwsString(input.Family)
+	networkMode := checkAndSetAwsString(input.NetworkMode)
+	cpu := checkAndSetAwsString(input.Cpu)
+	memory := checkAndSetAwsString(input.Memory)
+	executionRoleArn := checkAndSetAwsString(input.ExecutionRoleArn)
+	taskRoleArn := checkAndSetAwsString(input.TaskRoleArn)
 
 	var compatibilities []*string
 	for _, rc := range input.RequiresCompatibilities {
-		compatibilities = append(compatibilities, aws.String(rc))
+		compatibilities = append(compatibilities, setAwsString(rc))
 	}
 
 	var volumes []*ecs.Volume
 	for _, v := range input.Volumes {
 		volume := &ecs.Volume {
-				Name:  aws.String(v.Name),
+				Name:  setAwsString(v.Name),
 		}
 		volumes = append(volumes, volume)
 	}
@@ -211,23 +222,23 @@ func createTaskDefination(client *ecs.ECS, input config.TaskDefinition) string {
 }
 
 func setECSTask(input config.ECSRunTask, taskDefinitionArn string, startedByInput string) *ecs.RunTaskInput {
-	cluster := setAwsString(input.Cluster)
-	count := setAwsInt(input.Count)
-	launchType := setAwsString(input.LaunchType)
-	platformVersion := setAwsString(input.PlatformVersion)
-	taskDefinition := setAwsString(taskDefinitionArn)
-	startedBy := setAwsString(startedByInput)
+	cluster := checkAndSetAwsString(input.Cluster)
+	count := checkAndSetAwsInt(input.Count)
+	launchType := checkAndSetAwsString(input.LaunchType)
+	platformVersion := checkAndSetAwsString(input.PlatformVersion)
+	taskDefinition := checkAndSetAwsString(taskDefinitionArn)
+	startedBy := checkAndSetAwsString(startedByInput)
 	tags := setTags(input.Tags)
 
 	var securityGroups []*string
 	for _, sg := range input.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups {
-		securityGroups = append(securityGroups, aws.String(sg))
+		securityGroups = append(securityGroups, setAwsString(sg))
 	}
 	var subnets []*string
 	for _, sn := range input.NetworkConfiguration.AwsvpcConfiguration.Subnets {
-		subnets = append(subnets, aws.String(sn))
+		subnets = append(subnets, setAwsString(sn))
 	}
-	assignPublicIp := setAwsString(input.NetworkConfiguration.AwsvpcConfiguration.AssignPublicIp)
+	assignPublicIp := checkAndSetAwsString(input.NetworkConfiguration.AwsvpcConfiguration.AssignPublicIp)
 
 	awsVpcConfig := &ecs.AwsVpcConfiguration{
 		AssignPublicIp: assignPublicIp,
@@ -255,8 +266,8 @@ func setECSTask(input config.ECSRunTask, taskDefinitionArn string, startedByInpu
 
 func getECSTaskStatus(client *ecs.ECS, clusterInput string, taskInput string) {
 	var tasks []*string
-	tasks = append(tasks, aws.String(taskInput))
-	cluster := setAwsString(clusterInput)
+	tasks = append(tasks, setAwsString(taskInput))
+	cluster := checkAndSetAwsString(clusterInput)
 
 	input := &ecs.DescribeTasksInput{
     Cluster: cluster,
