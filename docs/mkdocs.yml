@@ -1,6 +1,6 @@
 site_name: yantra
 site_url: https://saurabhjambhule.github.io/yantra/
-site_description: An automation engine for building platform services.
+site_description: An engine for building a DevOps platform.
 repo_name: saurabhjambhule/yantra
 repo_url: https://github.com/saurabhjambhule/yantra
 edit_uri: edit/main/docs/docs/
@@ -11,7 +11,7 @@ theme:
   include_search_page: false
   search_index_only: true
   features:
-    - navigation.indexes
+    - navigation.expand
   palette:
     - media: "(prefers-color-scheme: light)"  # Light mode
       scheme: default
@@ -25,3 +25,12 @@ theme:
       toggle:
         icon: material/lightbulb
         name: Switch to dark mode
+
+nav:
+- Getting Started: index.md
+- Review Environment: review/intro.md
+- Amazon ECS:
+  - About: review/ecs/index.md
+  - review/ecs/prerequisite.md
+  - review/ecs/config.md
+  - review/ecs/login.md
