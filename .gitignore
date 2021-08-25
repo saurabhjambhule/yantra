@@ -15,3 +15,6 @@
 # vendor/
 
 dist/
+
+# docs site
+docs/site
